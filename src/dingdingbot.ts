@@ -2,27 +2,26 @@ import axios from 'axios'
 import rateLimit from 'axios-rate-limit'
 import crypto from 'crypto'
 
-
 type Text = {
-  msg: string;
-  isAtAll?: boolean;
-  atMobiles?: string[];
-  atDingTalkIds?: string[];
-};
+  msg: string
+  isAtAll?: boolean
+  atMobiles?: string[]
+  atDingTalkIds?: string[]
+}
 type Link = {
   /** 链接标题 */
-  text: string;
-  title: string;
-  picUrl?: string,
-  messageUrl: string,
+  text: string
+  title: string
+  picUrl?: string
+  messageUrl: string
 }
 
 type Markdown = {
-  title: string;
-  text: string;
-  atMobiles?: string[];
-  atDingTalkIds?: string[];
-  isAtAll?: boolean;
+  title: string
+  text: string
+  atMobiles?: string[]
+  atDingTalkIds?: string[]
+  isAtAll?: boolean
 }
 
 type FeedCard = {
@@ -31,12 +30,10 @@ type FeedCard = {
   picURL: string
 }
 
-
 type ActionCardItem = {
-  title: string;
+  title: string
   actionURL: string
 }
-
 
 type ActionCard = {
   headers: string
@@ -44,7 +41,6 @@ type ActionCard = {
   btnOrientation?: '0' | '1'
   btns: ActionCardItem[]
 }
-
 
 /**
  * FeedCard的构造函数
@@ -89,10 +85,9 @@ export class DingDingBot {
   constructor(webhook: string, secret: string = '') {
     this.webhook = webhook
     this.secret = secret
-    if ((secret !== '') && secret.startsWith('SEC')) {
+    if (secret !== '' && secret.startsWith('SEC')) {
       this.signContent()
     }
-
   }
 
   /**
@@ -103,7 +98,11 @@ export class DingDingBot {
   signContent() {
     const timestamp = new Date().getTime()
     const content = `${timestamp}\n${this.secret}`
-    const sign = crypto.createHmac('sha256', this.secret).update(content).digest().toString('base64')
+    const sign = crypto
+      .createHmac('sha256', this.secret)
+      .update(content)
+      .digest()
+      .toString('base64')
     this.webhook = `${this.webhook}&timestamp=${timestamp}&sign=${sign}`
   }
 
@@ -120,12 +119,12 @@ export class DingDingBot {
    */
   sendText({ msg, isAtAll = false, atMobiles = [], atDingTalkIds = [] }: Text): Promise<any> {
     const data = {
-      'msgtype': 'text',
-      'at': { 'isAtAll': false, 'atMobiles': [''], 'atUserIds': [''] },
-      'text': {}
+      msgtype: 'text',
+      at: { isAtAll: false, atMobiles: [''], atUserIds: [''] },
+      text: {}
     }
     if (this.isNotNullAndBlankString(msg as String)) {
-      data['text'] = { 'content': msg }
+      data['text'] = { content: msg }
     } else {
       console.error('Text消息内容不能为空!')
       throw new Error('Text消息内容不能为空!')
@@ -141,7 +140,20 @@ export class DingDingBot {
     }
     console.error('Text消息发送内容: ' + JSON.stringify(data))
     return this._post(data)
+  }
 
+  /**
+   * 发送表情消息类型
+   * @param picURL 表情图片地址
+   */
+  sendImage(picURL: string) {
+    if (this.isNotNullAndBlankString(picURL)) {
+      const data = {
+        msgtype: 'image',
+        image: { picURL: picURL }
+      }
+      return this._post(data)
+    }
   }
 
   /**
@@ -150,12 +162,12 @@ export class DingDingBot {
    */
   sendLink(link: Link): Promise<any> {
     const data = {
-      'msgtype': 'link',
-      'link': {
-        'text': '',
-        'title': '',
-        'picUrl': '',
-        'messageUrl': ''
+      msgtype: 'link',
+      link: {
+        text: '',
+        title: '',
+        picUrl: '',
+        messageUrl: ''
       }
     }
     if (this.isNotNullAndBlankString(link.text as String)) {
@@ -185,22 +197,22 @@ export class DingDingBot {
   }
 
   sendMarkdown({
-                 title,
-                 text,
-                 isAtAll = false,
-                 atMobiles = [],
-                 atDingTalkIds = []
-               }: Markdown): Promise<any> {
+    title,
+    text,
+    isAtAll = false,
+    atMobiles = [],
+    atDingTalkIds = []
+  }: Markdown): Promise<any> {
     const data = {
-      'msgtype': 'markdown',
-      'markdown': {
-        'title': '',
-        'text': ''
+      msgtype: 'markdown',
+      markdown: {
+        title: '',
+        text: ''
       },
-      'at': {
-        'isAtAll': isAtAll,
-        'atMobiles': [''],
-        'atUserIds': ['']
+      at: {
+        isAtAll: isAtAll,
+        atMobiles: [''],
+        atUserIds: ['']
       }
     }
     if (this.isNotNullAndBlankString(title as String)) {
@@ -230,26 +242,25 @@ export class DingDingBot {
 
   sendFeedCard(feedCardItems: FeedCard[]): Promise<any> {
     const data = {
-      'msgtype': 'feedCard',
-      'feedCard': {}
+      msgtype: 'feedCard',
+      feedCard: {}
     }
     data['feedCard'] = {
-      'links': feedCardItems
+      links: feedCardItems
     }
     return this._post(data)
   }
 
-
   sendActionCard({ headers, text, btnOrientation = '0', btns }: ActionCard): Promise<any> {
     const data = {
-      'msgtype': 'actionCard',
-      'actionCard': {}
+      msgtype: 'actionCard',
+      actionCard: {}
     }
     data['actionCard'] = {
-      'title': headers,
-      'text': text,
-      'btnOrientation': btnOrientation,
-      'btns': btns
+      title: headers,
+      text: text,
+      btnOrientation: btnOrientation,
+      btns: btns
     }
     return this._post(data)
   }
@@ -278,9 +289,3 @@ export class DingDingBot {
     }
   }
 }
-
-
-
-
-
-

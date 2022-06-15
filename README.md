@@ -27,24 +27,173 @@ curl 'https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxx' \
   }'
 ```
 
-### 三、支持功能
+```bash
+npm install dingdingbot
+```
+
+#### 支持功能如下
+
+-   支持Text消息；
+-   支持Link消息；
+-   支持Markdown消息；
+-   支持ActionCard消息；
+-   支持image表情消息；
+-   支持钉钉官方消息发送频率限制限制：每个机器人每分钟最多发送20条；
+-   支持最新版钉钉机器人加密设置密钥验证；
 
 ### Text文件类型发送
+
+### DingDingBot机器人配置初始化
 
 ```javascript
 const DingDingBot = require('dingdingbot')
 
-const d = new DingDingBot('https://oapi.dingtalk.com/robot/send?access_token=eed4cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+// 不携带加密token
+const bot = new DingDingBot('https://oapi.dingtalk.com/robot/send?access_token=eed4cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+// 携带加密token
+const bot = new DingDingBot('https://oapi.dingtalk.com/robot/send?access_token=eed4cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
   'SECxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+```
 
-d.sendText({ msg: 'Hello World!' }).then(r => console.log(r))
-d.sendText({ msg: 'Hello World!', isAtAll: true }).then(r => console.log(r))
-d.sendText({
+# 三、各消息类型使用示例
+
+### Text消息
+
+![image-20220615140552707](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615140552707.png)
+
+```javascript
+bot.sendText({ msg: 'Hello World!' }).then(r => console.log(r))
+```
+![image-20220615140733204](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615140733204.png)
+
+```javascript
+// @所有人
+bot.sendText({ msg: 'Hello World!', isAtAll: true }).then(r => console.log(r))
+
+```
+
+![image-20220615141135608](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615141135608.png)
+
+
+
+```javascript
+// Text消息之@指定用户atMobiles: ['188xxxxx', '187xxxxx'] 改写手机号
+bot.sendText({
   msg: 'Hello World!',
   isAtAll: false,
   atMobiles: ['188xxxxx', '187xxxxx'],
   atDingTalkIds: ['userid1', 'userid2']
 }).then(r => console.log(r))
+```
+
+
+
+![image-20220615141257175](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615141257175.png)
+
+### Image表情消息
+
+```javascript
+// Image表情消息
+const catImageUrl = 'https://gss0.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/18d8bc3eb13533facf73c7a1a9d3fd1f40345b73.jpg'
+bot.sendImage(catImageUrl).then(r => console.log(r)).catch(e => console.log(e))
+```
+
+![image-20220615141433188](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615141433188.png)
+
+### Link消息
+
+```javascript
+// Link消息
+bot.sendLink({
+  text: 'Hello World!',
+  title: '万万没想到!',
+  picUrl: 'https://pic.dmjnb.com/pic/cef5dd8fb7aaabb8bb116bb55f270ba9?imageMogr2/thumbnail/x380/quality/90!',
+  messageUrl: 'https://www.baidu.com'
+}).then(r => console.log(r)).catch(e => console.log(e))
 
 ```
 
+![image-20220615141545661](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615141545661.png)
+
+###  Markdown消息
+
+```javascript
+// Markdown消息@所有人
+bot..sendMarkdown({
+    title: '漢洲天機',
+    text: '#### 杭州天气 @150XXXXXXXX \n > 9度，西北风1级，空气良89，相对温度73%\n > ![screenshot](https://img.alicdn.com/tfs/TB1NwmBEL9TBuNjy1zbXXXpepXa-2400-1218.png)\n > ###### 10点20分发布 [天气](https://www.dingtalk.com) \n',
+    isAtAll: true
+  }
+).then(r => console.log(r)).catch(e => console.log(e))
+
+// Markdown消息
+.sendMarkdown({
+    title: '漢洲天機',
+    text: '#### 杭州天气 @150XXXXXXXX \n > 9度，西北风1级，空气良89，相对温度73%\n > ![screenshot](https://img.alicdn.com/tfs/TB1NwmBEL9TBuNjy1zbXXXpepXa-2400-1218.png)\n > ###### 10点20分发布 [天气](https://www.dingtalk.com) \n',
+    isAtAll: false
+  }
+).then(r => console.log(r)).catch(e => console.log(e))
+
+// @某个人
+bot.sendMarkdown({
+    title: '漢洲天機',
+    text: '#### 漢洲天機 @18727792911 \n > 9度，西北风1级，空气良89，相对温度73%\n > ![screenshot](https://img.alicdn.com/tfs/TB1NwmBEL9TBuNjy1zbXXXpepXa-2400-1218.png)\n > ###### 10点20分发布 [天气](https://www.dingtalk.com) \n',
+    atMobiles: ['18871535971', ['18727792911'],['21312321123']]
+  }
+).then(r => console.log(r)).catch(e => console.log(e))
+```
+
+![image-20220615142007010](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615142007010.png)
+
+
+
+### FeedCard消息
+
+```javascript
+// FeedCard消息
+const card1 = CardItem('氧气美女',
+  'https://www.dingtalk.com/',
+  'https://pic.dmjnb.com/pic/cef5dd8fb7aaabb8bb116bb55f270ba9?imageMogr2/thumbnail/x380/quality/90'
+)
+const card2 = CardItem('氧气美女',
+  'https://www.dingtalk.com/',
+  'https://pic.dmjnb.com/pic/cef5dd8fb7aaabb8bb116bb55f270ba9?imageMogr2/thumbnail/x380/quality/90'
+)
+const card3 = CardItem('氧气美女',
+  'https://www.dingtalk.com/',
+  'https://pic.dmjnb.com/pic/cef5dd8fb7aaabb8bb116bb55f270ba9?imageMogr2/thumbnail/x380/quality/90'
+)
+bot.sendFeedCard(
+  [card1, card2, card3]
+).then(r => console.log(r)).catch(e => console.log(e))
+```
+
+![image-20220615142215447](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615142215447.png)
+
+### ActionCard消息
+
+```javascript
+// ActionCard消息
+const btns2 = [ActionCardItem('支持1+1', 'https://www.dingtalk.com/'), ActionCardItem('反对2+2', 'https://www.dingtalk.com/')]
+bot.sendActionCard({
+  headers: ['投票'],
+  btns: btns2,
+  text: `![选择](${catImageUrl}) \n### 故事是这样子的...`
+}).then(r => console.log(r)).catch(e => console.log(e))
+```
+
+![image-20220615142404641](https://typora-1300715298.cos.ap-shanghai.myqcloud.com/image-20220615142404641.png)
+
+```javascript
+// 选项卡换方向
+d.sendActionCard({
+  headers: ['投票'],
+  btns: btns2,
+  btnOrientation: '1',
+  text: `![选择](${catImageUrl}) \n### 故事是这样子的...`
+}).then(r => console.log(r)).catch(e => console.log(e))
+```
+
+
+
+## 
