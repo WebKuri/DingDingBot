@@ -46,7 +46,7 @@ npm install dingdingbot
 ### DingDingBot机器人配置初始化
 
 ```javascript
-const DingDingBot = require('dingdingbot')
+const DingDingBot = require('dingdingbot').DingDingBot
 
 // 不携带加密token
 const bot = new DingDingBot('https://oapi.dingtalk.com/robot/send?access_token=eed4cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
@@ -119,7 +119,7 @@ bot.sendLink({
 
 ```javascript
 // Markdown消息@所有人
-bot..sendMarkdown({
+bot.sendMarkdown({
     title: '漢洲天機',
     text: '#### 杭州天气 @150XXXXXXXX \n > 9度，西北风1级，空气良89，相对温度73%\n > ![screenshot](https://img.alicdn.com/tfs/TB1NwmBEL9TBuNjy1zbXXXpepXa-2400-1218.png)\n > ###### 10点20分发布 [天气](https://www.dingtalk.com) \n',
     isAtAll: true
@@ -127,7 +127,7 @@ bot..sendMarkdown({
 ).then(r => console.log(r)).catch(e => console.log(e))
 
 // Markdown消息
-.sendMarkdown({
+bot.sendMarkdown({
     title: '漢洲天機',
     text: '#### 杭州天气 @150XXXXXXXX \n > 9度，西北风1级，空气良89，相对温度73%\n > ![screenshot](https://img.alicdn.com/tfs/TB1NwmBEL9TBuNjy1zbXXXpepXa-2400-1218.png)\n > ###### 10点20分发布 [天气](https://www.dingtalk.com) \n',
     isAtAll: false

@@ -1,4 +1,4 @@
-import DummyClass from '../src/dingdingbot'
+import { DingDingBot as DummyClass } from '../src/dingdingbot'
 
 /**
  * Dummy test
