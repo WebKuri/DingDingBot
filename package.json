@@ -1,8 +1,12 @@
 {
   "name": "dingdingbot",
-  "version": "0.0.0",
-  "description": "",
-  "keywords": [],
+  "version": "0.0.2",
+  "description": "钉钉机器人typescript版本",
+  "keywords": [
+    "dingdingbot",
+    "钉钉机器人",
+    "通知"
+  ],
   "main": "dist/dingdingbot.umd.js",
   "module": "dist/dingdingbot.es5.js",
   "typings": "dist/types/dingdingbot.d.ts",
@@ -12,7 +16,7 @@
   "author": "TalkBeCheap <xfy150150@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/WebKuri/DingDingBot.git"
   },
   "license": "MIT",
   "engines": {
@@ -32,7 +36,8 @@
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
-    "travis-deploy-once": "travis-deploy-once"
+    "travis-deploy-once": "travis-deploy-once",
+    "publish": "npm publish"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
